@@ -8,6 +8,21 @@ I_MATRIX = np.eye(2, dtype=complex)
 X_MATRIX = np.array([[0.0, 1.0], [1.0, 0.0]], dtype=complex)
 Z_MATRIX = np.array([[1.0, 0.0], [0.0, -1.0]], dtype=complex)
 H_MATRIX = np.array([[1.0, 1.0], [1.0, -1.0]], dtype=complex) / np.sqrt(2.0)
+Y_MATRIX = np.array([[0.0, -1.0], [1.0, 0.0]], dtype=complex)
+
+PAULI_MATRICES = {"I": I_MATRIX, "X": X_MATRIX, "Y": Y_MATRIX, "Z": Z_MATRIX}
+
+
+def pauli_string_matrix(pauli_string: str, num_qubits: int) -> np.ndarray:
+    """Build a Pauli-string operator; the rightmost character addresses qubit 0."""
+    factors = [
+        PAULI_MATRICES[pauli_string[index]]
+        for index in range(num_qubits - 1, -1, -1)
+    ]
+    operator = factors[0]
+    for factor in factors[1:]:
+        operator = np.kron(operator, factor)
+    return operator
 
 
 def rz_matrix(angle: float) -> np.ndarray:
